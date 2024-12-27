@@ -1,0 +1,97 @@
+name: Selenium with Java Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-test-dev:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set Up Java
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+
+      # Step 3: Build the Project
+      - name: Build Project
+        run: mvn clean install
+
+      # Step 4: Run Cucumber Tests in DEV
+      - name: Run Cucumber Tests (DEV)
+        run: mvn test -Dcucumber.filter.tags="@DEV"
+
+      # Step 5: Generate Reports
+      - name: Archive Reports (DEV)
+        uses: actions/upload-artifact@v3
+        with:
+          name: dev-test-reports
+          path: target/reports/
+
+      # Step 6: Send Approval Email
+      - name: Send Approval Email (DEV)
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Approval Required: DEV Test Results"
+          body: |
+            Test reports for DEV environment are available.
+            Please review and approve it.
+          to: "manager@example.com"
+          attachments: target/reports/cucumber-html-report.html 
+
+  build-and-test-sit:
+    needs: build-and-test-dev
+    runs-on: ubuntu-latest
+    steps:
+      # Step 7: Checkout the Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 8: Set Up Java
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+
+      # Step 9: Build the Project
+      - name: Build Project
+        run: mvn clean install
+
+      # Step 10: Run Cucumber Tests in SIT
+      - name: Run Cucumber Tests (SIT)
+        run: mvn test -Dcucumber.filter.tags="@SIT"
+
+      # Step 11: Generate Reports
+      - name: Archive Reports (SIT)
+        uses: actions/upload-artifact@v3
+        with:
+          name: sit-test-reports
+          path: target/reports/
+
+      # Step 12: Send Approval Email
+      - name: Send Approval Email (SIT)
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Approval Required: SIT Test Results"
+          body: |
+            Test reports for SIT environment are available.
+            Please review and approve to complete the workflow.
+          to: "sankarviswanathan1991@gmail.com"
+          attachments: target/reports/cucumber-html-report.html
+
+      

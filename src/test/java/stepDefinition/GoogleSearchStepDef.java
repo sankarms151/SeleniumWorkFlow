@@ -5,9 +5,10 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import org.openqa.selenium.By;
 
-import commonMethods.Base;
+//import commonMethods.Base;
+import commonMethods.Base1;
 
-public class GoogleSearchStepDef extends Base {
+public class GoogleSearchStepDef extends Base1 {
 
     @Given("^User opens Google homepage$")
     public void openGoogleHomepage() {

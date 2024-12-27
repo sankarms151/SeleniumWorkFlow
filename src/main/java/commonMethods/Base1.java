@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class Base {
+public class Base1 {
 	
 	public WebDriver driver;
 	public ExtentReports extent;

@@ -37,6 +37,7 @@ jobs:
           path: |
             reports/
             reports/screenshots/
+            target/cucumber-reports/
 
       # Step 6: Send Approval Email
       - name: Send Approval Email (DEV)
@@ -88,6 +89,7 @@ jobs:
           path: |
             reports/
             reports/screenshots/
+            target/cucumber-reports/
 
       # Step 12: Send Approval Email
       - name: Send Approval Email (SIT)

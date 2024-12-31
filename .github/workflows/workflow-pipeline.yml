@@ -34,7 +34,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dev-test-reports
-          path: target/reports/
+          path: |
+            reports/
+            reports/screenshots/
 
       # Step 6: Send Approval Email
       - name: Send Approval Email (DEV)
@@ -49,7 +51,10 @@ jobs:
             Test reports for DEV environment are available.
             Please review and approve it.
           to: "manager@example.com"
-          attachments: target/reports/cucumber-html-report.html 
+          attachments: |
+            target/cucumber-reports/cucumber-report.html
+            reports/extent-report.html
+            reports/screenshots/*
 
   build-and-test-sit:
     needs: build-and-test-dev
@@ -78,7 +83,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: sit-test-reports
-          path: target/reports/
+          path: |
+            reports/
+            reports/screenshots/
 
       # Step 12: Send Approval Email
       - name: Send Approval Email (SIT)
@@ -93,6 +100,9 @@ jobs:
             Test reports for SIT environment are available.
             Please review and approve to complete the workflow.
           to: "sankarviswanathan1991@gmail.com"
-          attachments: target/reports/cucumber-html-report.html
+          attachments: |
+            target/cucumber-reports/cucumber-report.html
+            reports/extent-report.html
+            reports/screenshots/*
 
       

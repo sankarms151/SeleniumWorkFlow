@@ -11,7 +11,7 @@ import io.cucumber.junit.CucumberOptions;
 @CucumberOptions(
 		features = "src/test/resources/Features",
 		glue = {"stepDefinition","hooks"},
-		//tags = "@DEV",
+		tags = "@DEV or @SIT",
 		plugin = {
 				"pretty",
 				"html:target/cucumber-reports/cucumber-report.html",

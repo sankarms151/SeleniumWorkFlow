@@ -39,6 +39,10 @@ jobs:
             reports/screenshots/
             target/cucumber-reports/
 
+      # Debug Step: Verify Report Path
+      - name: List target/cucumber-reports contents
+        run: ls -R target/cucumber-reports/
+
       # Step 6: Send Approval Email
       - name: Send Approval Email (DEV)
         uses: dawidd6/action-send-mail@v3

@@ -31,7 +31,7 @@ jobs:
 
       # Step 5: Generate Reports
       - name: Archive Reports (DEV)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dev-test-reports
           path: |
@@ -46,6 +46,7 @@ jobs:
           server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
+          from: ${{ secrets.EMAIL_USERNAME }}
           subject: "Approval Required: DEV Test Results"
           body: |
             Test reports for DEV environment are available.
@@ -80,7 +81,7 @@ jobs:
 
       # Step 11: Generate Reports
       - name: Archive Reports (SIT)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sit-test-reports
           path: |
@@ -95,6 +96,7 @@ jobs:
           server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
+          from: ${{ secrets.EMAIL_USERNAME }}
           subject: "Approval Required: SIT Test Results"
           body: |
             Test reports for SIT environment are available.

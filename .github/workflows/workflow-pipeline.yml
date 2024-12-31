@@ -54,7 +54,7 @@ jobs:
             Please review and approve it.
           to: "sankarviswanathan1991@gmail.com"
           attachments: |
-            target/cucumber-reports/*
+            target/cucumber-reports/cucumber-report.html
             reports/extent-report.html
             reports/screenshots/*
 

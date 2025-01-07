@@ -1,4 +1,4 @@
-name: Selenium with Java Pipeline
+name: Selenium with Cucumber Pipeline
 
 on:
   push:

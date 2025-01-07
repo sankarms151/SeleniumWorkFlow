@@ -1,0 +1,135 @@
+name: Selenium with Cucumber Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      env_name:
+        description: "Environment Name (DEV or SIT)"
+        required: true
+        type: string
+      env_tag:
+        description: "Cucumber Tags for Test Execution"
+        required: true
+        type: string
+
+jobs:
+  build-and-test-dev:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set Up Java
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      # Step 3: Build the Project
+      - name: Build Project
+        run: mvn clean install
+
+      # Step 4: Run Cucumber Tests in DEV
+      - name: Run Cucumber Tests (DEV)
+        run: mvn test -Dcucumber.filter.tags="@${{ inputs.env_tag }}"
+
+      # Step 5: Generate Reports
+      - name: Archive Reports (DEV)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-test-reports
+          path: |
+            reports/
+            reports/screenshots/
+            
+      # Step 6: Send Approval Email
+      - name: Send Approval Email (DEV)
+        if: ${{ inputs.env_name == 'DEV' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          subject: "Approval Required: DEV Test Results"
+          body: |
+            Test reports for DEV environment are available.
+            Please review and approve it.
+          to: "sankarviswanathan1991@gmail.com"
+          attachments: |
+            reports/extent-report.html
+            reports/screenshots/*
+            
+      - name: Await Manual Approval
+        uses: peter-evans/wait-for-approval@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          approvals: 1
+          comments: |
+            Please review the ${{ inputs.env_name }} test results and approve the workflow to proceed.
+
+  build-and-test-sit:
+    needs: build-and-test-dev
+    runs-on: ubuntu-latest
+    steps:
+      # Step 7: Checkout the Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 8: Set Up Java
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      # Step 9: Build the Project
+      - name: Build Project
+        run: mvn clean install
+
+      # Step 10: Run Cucumber Tests in SIT
+      - name: Run Cucumber Tests (SIT)
+        run: mvn test -Dcucumber.filter.tags="@${{ inputs.env_tag }}"
+
+      # Step 11: Generate Reports
+      - name: Archive Reports (SIT)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sit-test-reports
+          path: |
+            reports/
+            reports/screenshots/
+            
+      # Step 12: Send Approval Email
+      - name: Send Approval Email (SIT)
+        if: ${{ inputs.env_name == 'SIT' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          subject: "Approval Required: SIT Test Results"
+          body: |
+            Test reports for SIT environment are available.
+            Please review and approve to complete the workflow.
+          to: "sankarviswanathan1991@gmail.com"
+          attachments: |
+            reports/extent-report.html
+            reports/screenshots/*
+
+      - name: Await Manual Approval
+        uses: peter-evans/wait-for-approval@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          approvals: 1
+          comments: |
+            Please review the ${{ inputs.env_name }} test results and approve the workflow to proceed.

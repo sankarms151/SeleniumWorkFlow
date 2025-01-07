@@ -129,7 +129,7 @@ jobs:
             reports/screenshots/*
 
   wait-for-approval:
-    needs: build-and-test-dev
+    needs: build-and-test-sit
     runs-on: ubuntu-latest
     steps:
       - name: Wait for Webhook Trigger

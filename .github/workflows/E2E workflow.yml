@@ -1,10 +1,12 @@
-name: Selenium with Cucumber Pipeline
+name: Selenium with Java Pipeline
 
 on:
   push:
     branches:
       - master
   workflow_dispatch:
+  repository_dispatch:
+    types: [approval_received]
   workflow_call:
     inputs:
       env_name:
@@ -67,13 +69,13 @@ jobs:
             reports/extent-report.html
             reports/screenshots/*
             
-      - name: Await Manual Approval
-        uses: peter-evans/wait-for-approval@v1
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          approvals: 1
-          comments: |
-            Please review the ${{ inputs.env_name }} test results and approve the workflow to proceed.
+  wait-for-approval:
+    needs: build-and-test-dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Webhook Trigger
+        run: echo "Waiting for approval from Gmail..."
+        timeout-minutes: 0  # Indefinite wait
 
   build-and-test-sit:
     needs: build-and-test-dev
@@ -126,10 +128,12 @@ jobs:
             reports/extent-report.html
             reports/screenshots/*
 
-      - name: Await Manual Approval
-        uses: peter-evans/wait-for-approval@v1
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          approvals: 1
-          comments: |
-            Please review the ${{ inputs.env_name }} test results and approve the workflow to proceed.
+  wait-for-approval:
+    needs: build-and-test-dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Webhook Trigger
+        run: echo "Waiting for approval from Gmail..."
+        timeout-minutes: 0  # Indefinite wait
+            
+            

@@ -39,7 +39,7 @@ jobs:
 
       # Step 4: Run Cucumber Tests in DEV
       - name: Run Cucumber Tests (DEV)
-        run: mvn test -Dcucumber.filter.tags="@${{ inputs.env_tag }}"
+        run: mvn test -Dcucumber.filter.tags="@DEV"
 
       # Step 5: Generate Reports
       - name: Archive Reports (DEV)
@@ -52,7 +52,6 @@ jobs:
             
       # Step 6: Send Approval Email
       - name: Send Approval Email (DEV)
-        if: ${{ inputs.env_name == 'DEV' }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -98,7 +97,7 @@ jobs:
 
       # Step 10: Run Cucumber Tests in SIT
       - name: Run Cucumber Tests (SIT)
-        run: mvn test -Dcucumber.filter.tags="@${{ inputs.env_tag }}"
+        run: mvn test -Dcucumber.filter.tags="@SIT"
 
       # Step 11: Generate Reports
       - name: Archive Reports (SIT)
@@ -111,7 +110,6 @@ jobs:
             
       # Step 12: Send Approval Email
       - name: Send Approval Email (SIT)
-        if: ${{ inputs.env_name == 'SIT' }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com

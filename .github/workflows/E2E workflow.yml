@@ -7,17 +7,7 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [approval_received]
-  workflow_call:
-    inputs:
-      env_name:
-        description: "Environment Name (DEV or SIT)"
-        required: true
-        type: string
-      env_tag:
-        description: "Cucumber Tags for Test Execution"
-        required: true
-        type: string
-
+  
 jobs:
   build-and-test-dev:
     runs-on: ubuntu-latest
@@ -70,6 +60,9 @@ jobs:
             
   wait-for-approval-dev:
     needs: build-and-test-dev
+    uses: ./.github/workflows/reusable-approval.yml
+    with:
+      env_name: "DEV"
     runs-on: ubuntu-latest
     steps:
       - name: Wait for Webhook Trigger
@@ -128,6 +121,9 @@ jobs:
 
   wait-for-approval-sit:
     needs: build-and-test-sit
+    uses: ./.github/workflows/reusable-approval.yml
+    with:
+      env_name: "SIT"
     runs-on: ubuntu-latest
     steps:
       - name: Wait for Webhook Trigger

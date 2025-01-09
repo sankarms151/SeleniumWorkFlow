@@ -60,7 +60,7 @@ jobs:
             
   wait-for-approval-dev:
     needs: build-and-test-dev
-    uses: ./.github/workflows/reusable-approval.yml
+    uses: ./.github/workflows/reusable_approval.yml
     with:
       env_name: "DEV"
     
@@ -116,7 +116,7 @@ jobs:
 
   wait-for-approval-sit:
     needs: build-and-test-sit
-    uses: ./.github/workflows/reusable-approval.yml
+    uses: ./.github/workflows/reusable_approval.yml
     with:
       env_name: "SIT"
             

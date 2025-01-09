@@ -1,0 +1,16 @@
+name: Manual Approval for SIT
+
+on:
+  workflow_dispatch:
+    inputs:
+      approval:
+        description: 'Approve SIT testing'
+        required: true
+        default: 'true'
+
+jobs:
+  approve-sit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify approval
+        run: echo "Approval received. The SIT testing workflow will proceed."

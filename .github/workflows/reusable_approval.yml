@@ -25,4 +25,7 @@ jobs:
             sleep 60
           done
           
-        timeout-minutes: 0
+      - name: Create Approval File
+        if: github.event.action == 'approval_received' && github.event.client_payload.env_name == inputs.env_name
+        run: touch /tmp/approval_received_${{ inputs.env_name }}
+       

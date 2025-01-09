@@ -60,12 +60,12 @@ jobs:
             
   wait-for-approval-dev:
     needs: build-and-test-dev
-    uses: ./.github/workflows/reusable-approval.yml
+    uses: ./.github/workflows/reusable_approval.yml
     with:
-      env_name: "DEV"
+      env_name: ${{ github.event.client_payload.env_name }}
     
   build-and-test-sit:
-    needs: build-and-test-dev
+    needs: wait-for-approval-dev
     runs-on: ubuntu-latest
     steps:
       # Step 7: Checkout the Code
@@ -116,9 +116,8 @@ jobs:
 
   wait-for-approval-sit:
     needs: build-and-test-sit
-    needs: build-and-test-dev
-    uses: ./.github/workflows/reusable-approval.yml
+    uses: ./.github/workflows/reusable_approval.yml
     with:
-      env_name: "SIT"
+      env_name: ${{ github.event.client_payload.env_name }}
             
             

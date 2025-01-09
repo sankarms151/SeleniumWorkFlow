@@ -80,11 +80,6 @@ jobs:
     needs: build-and-test-dev
     runs-on: ubuntu-latest
     steps:
-      # Step - Waiting for Manual approval
-      - name: Check for manual approval
-        if: github.event.inputs.approval == 'true'
-        run: echo "Approval received. Proceeding to SIT testing..."
-      
       # Step 7: Checkout the Code
       - name: Checkout Code
         uses: actions/checkout@v3

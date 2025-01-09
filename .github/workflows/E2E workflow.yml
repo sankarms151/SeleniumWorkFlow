@@ -63,12 +63,7 @@ jobs:
     uses: ./.github/workflows/reusable-approval.yml
     with:
       env_name: "DEV"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for Webhook Trigger
-        run: echo "Waiting for approval from Gmail..."
-        timeout-minutes: 0  # Indefinite wait
-
+    
   build-and-test-sit:
     needs: build-and-test-dev
     runs-on: ubuntu-latest
@@ -121,13 +116,9 @@ jobs:
 
   wait-for-approval-sit:
     needs: build-and-test-sit
+    needs: build-and-test-dev
     uses: ./.github/workflows/reusable-approval.yml
     with:
       env_name: "SIT"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for Webhook Trigger
-        run: echo "Waiting for approval from Gmail..."
-        timeout-minutes: 0  # Indefinite wait
             
             

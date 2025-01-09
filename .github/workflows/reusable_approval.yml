@@ -1,18 +1,28 @@
-name: Approval Check
+name: Wait for Approval
 
 on:
   workflow_call:
     inputs:
       env_name:
-        description: "Environment Name (DEV or SIT)"
         required: true
         type: string
 
 jobs:
-  check-approval:
+  wait-for-approval:
     runs-on: ubuntu-latest
     steps:
       - name: Log Environment
+        run: echo "Waiting for approval in environment ${{ inputs.env_name }}"
+
+      - name: Wait for Webhook Trigger
         run: |
-          echo "Checking for approval in environment: ${{ inputs.env_name }}"
-      # You can add more steps here to simulate or check for approval
+          while true; do
+            if [ -f /tmp/approval_received ]; then
+              echo "Approval received for ${{ inputs.env_name }}!"
+              break
+            fi
+            echo "No approval yet for ${{ inputs.env_name }}. Waiting..."
+            sleep 60
+          done
+          
+        timeout-minutes: 0

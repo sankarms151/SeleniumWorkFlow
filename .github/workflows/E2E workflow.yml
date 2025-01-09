@@ -5,7 +5,8 @@ on:
     branches:
       - master
   workflow_dispatch:
-  
+  repository_dispatch:
+    types: [approval_received]
   
 jobs:
   build-and-test-dev:

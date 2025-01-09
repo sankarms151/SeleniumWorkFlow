@@ -116,7 +116,6 @@ jobs:
 
   wait-for-approval-sit:
     needs: build-and-test-sit
-    needs: build-and-test-dev
     uses: ./.github/workflows/reusable-approval.yml
     with:
       env_name: "SIT"

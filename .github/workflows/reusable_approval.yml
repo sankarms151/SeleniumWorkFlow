@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: Log Environment
         run: echo "Waiting for approval in environment ${{ inputs.env_name }}"
+        
+      - name: Simulate Approval
+        run: |
+           echo "Simulating approval after 3 minutes..."
+           sleep 30  # Wait for 3 minutes
+           touch /tmp/approval_received
 
       - name: Wait for Webhook Trigger
         run: |

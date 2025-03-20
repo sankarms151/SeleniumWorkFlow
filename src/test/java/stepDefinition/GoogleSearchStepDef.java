@@ -13,7 +13,7 @@ public class GoogleSearchStepDef {
 	@Given("^User opens Google homepage$")
 	public void openGoogleHomepage() {
 		Base.createTest("Google Search Test");
-		Base.driver.get("https://www.google.com");
+		Base.driver.get("https://www.google.com/");
 		Base.test.info("Google homepage opened.");
 	}
 

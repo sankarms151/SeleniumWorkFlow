@@ -44,7 +44,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Upload Coverage Report to AWS S3
-        run: aws s3 cp target/site/jacoco/ s3://${{ secrets.AWS_S3_BUCKET }}/extent-reports/
+        run: aws s3 cp target/site/jacoco/ s3://${{ secrets.AWS_S3_BUCKET }}/extent-reports/ --recursive
 
       - name: Summarize Coverage in Pull Request
         uses: mshick/add-pr-comment@v2
@@ -115,7 +115,7 @@ jobs:
         run: mvn jacoco:report && mvn site
 
       - name: Upload Coverage Report to AWS S3
-        run: aws s3 cp target/site/jacoco/ s3://${{ secrets.AWS_S3_BUCKET }}/extent-reports/
+        run: aws s3 cp target/site/jacoco/ s3://${{ secrets.AWS_S3_BUCKET }}/extent-reports/ --recursive
 
       - name: Summarize Coverage in Pull Request
         uses: mshick/add-pr-comment@v2

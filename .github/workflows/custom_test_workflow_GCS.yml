@@ -1,35 +1,56 @@
-name: Selenium with Java Pipeline
+name: Full Test and Approval Workflow
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
+  //repository_dispatch:
+    //types: [approval_received]
+  
 jobs:
   build-and-test-dev:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set Up Java
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
 
-      # Step 3: Build the Project
       - name: Build Project
         run: mvn clean install
 
-      # Step 4: Run Cucumber Tests in DEV
       - name: Run Cucumber Tests (DEV)
         run: mvn test -Dcucumber.filter.tags="@DEV"
 
-      # Step 5: Generate Reports
+      - name: Generate Test Coverage Report
+        run: mvn jacoco:report
+
+      - name: Clean Previous Reports
+        run: rm -rf coverage-reports/*
+
+      - name: Generate Visual Report with Coverage Metrics
+        run: mvn jacoco:report && mvn site
+
+      - name: Upload Coverage Report to Google Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: target/site/jacoco/
+          destination: ${{ secrets.GCS_BUCKET }}/coverage-reports/
+
+      - name: Summarize Coverage in Pull Request
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            **Test Coverage Summary:**
+            - Coverage report has been generated and uploaded.
+            - View the full report [here](https://storage.googleapis.com/${{ secrets.GCS_BUCKET }}/coverage-reports/index.html)
+            - Review coverage changes to ensure adequate test coverage.
+
       - name: Archive Reports (DEV)
         uses: actions/upload-artifact@v4
         with:
@@ -37,8 +58,7 @@ jobs:
           path: |
             reports/
             reports/screenshots/
-            
-      # Step 6: Send Approval Email
+
       - name: Send Approval Email (DEV)
         uses: dawidd6/action-send-mail@v3
         with:
@@ -56,30 +76,55 @@ jobs:
             reports/extent-report.html
             reports/screenshots/*
 
-  build-and-test-sit:
+  wait-for-approval-dev:
     needs: build-and-test-dev
+    uses: ./.github/workflows/reusable_approval.yml
+    with:
+      env_name: "DEV"
+
+  build-and-test-sit:
+    needs: wait-for-approval-dev
     runs-on: ubuntu-latest
     steps:
-      # Step 7: Checkout the Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 8: Set Up Java
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
 
-      # Step 9: Build the Project
       - name: Build Project
         run: mvn clean install
 
-      # Step 10: Run Cucumber Tests in SIT
       - name: Run Cucumber Tests (SIT)
         run: mvn test -Dcucumber.filter.tags="@SIT"
 
-      # Step 11: Generate Reports
+      - name: Generate Test Coverage Report
+        run: mvn jacoco:report
+
+      - name: Clean Previous Reports
+        run: rm -rf coverage-reports/*
+
+      - name: Generate Visual Report with Coverage Metrics
+        run: mvn jacoco:report && mvn site
+
+      - name: Upload Coverage Report to Google Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: target/site/jacoco/
+          destination: ${{ secrets.GCS_BUCKET }}/coverage-reports/sit/
+
+      - name: Summarize Coverage in Pull Request
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            **SIT Test Coverage Summary:**
+            - Coverage report has been generated and uploaded.
+            - View the full report [here](https://storage.googleapis.com/${{ secrets.GCS_BUCKET }}/coverage-reports/sit/index.html)
+            - Review coverage changes to ensure adequate test coverage.
+
       - name: Archive Reports (SIT)
         uses: actions/upload-artifact@v4
         with:
@@ -87,8 +132,7 @@ jobs:
           path: |
             reports/
             reports/screenshots/
-            
-      # Step 12: Send Approval Email
+
       - name: Send Approval Email (SIT)
         uses: dawidd6/action-send-mail@v3
         with:
@@ -106,4 +150,8 @@ jobs:
             reports/extent-report.html
             reports/screenshots/*
 
-      
+  wait-for-approval-sit:
+    needs: build-and-test-sit
+    uses: ./.github/workflows/reusable_approval.yml
+    with:
+      env_name: "SIT"

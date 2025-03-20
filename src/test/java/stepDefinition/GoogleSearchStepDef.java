@@ -27,7 +27,7 @@ public class GoogleSearchStepDef {
 
 	@Then("^Results are displayed$")
 	public void resultsAreDisplayed() {
-		if (Base.driver.getTitle().contains("AWS")) {
+		if (Base.driver.getTitle().contains("Oracle")) {
 			Base.test.pass("AWS search results displayed.");
 		} else {
 			Base.test.fail("AWS search results not displayed.");

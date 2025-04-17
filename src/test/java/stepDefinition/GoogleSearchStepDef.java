@@ -18,16 +18,17 @@ public class GoogleSearchStepDef {
 	}
 
 	@When("^User searches for AWS$")
-	public void searchForAWS() {
+	public void searchForAWS() throws InterruptedException {
 		Base.driver.findElement(By.name("q")).sendKeys("AWS");
 		Base.driver.findElement(By.name("q")).submit();
+		Thread.sleep(10000);
 		Base.test.info("Search for AWS performed.");
 		Base.takeScreenshot("AWS_Search_Result");
 	}
 
 	@Then("^Results are displayed$")
 	public void resultsAreDisplayed() {
-		if (Base.driver.getTitle().contains("Oracle")) {
+		if (Base.driver.getTitle().contains("AWS")) {
 			Base.test.pass("AWS search results displayed.");
 		} else {
 			Base.test.fail("AWS search results not displayed.");

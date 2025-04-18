@@ -39,7 +39,7 @@ jobs:
       - name: Add Test Report Summary
         run: |
           echo "### ✅ Test Execution Complete for *${{ inputs.environment }}*" >> $GITHUB_STEP_SUMMARY
-          echo "📄 [Download Test Report Artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)" >> $GITHUB_STEP_SUMMARY
+          echo "📄 [Download Test Report Artifact](https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ needs.test.outputs.artifact_id }}/zip)" >> $GITHUB_STEP_SUMMARY
           echo "📌 Please review and approve to proceed to deployment." >> $GITHUB_STEP_SUMMARY
 
   approval-and-deploy:
